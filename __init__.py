@@ -70,7 +70,7 @@ class RhinLinhaBase(Operator, AddObjectHelper):
 
 def add_object_button(self, context):
     self.layout.operator(
-        LinhaBase.bl_idname,
+        RhinLinhaBase.bl_idname,
         text="LinhaBase",
         icon='VIEW3D')
 
