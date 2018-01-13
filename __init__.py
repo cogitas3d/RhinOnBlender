@@ -11,6 +11,7 @@ bl_info = {
     }
 
 import bpy
+import bmesh
 from math import sqrt
 from bpy.types import Operator
 from bpy_extras.object_utils import AddObjectHelper, object_data_add
@@ -473,6 +474,87 @@ class RhinEscultura(bpy.types.Panel):
         row = layout.row()
         row.operator("paint.brush_select", text="Alisa", icon="BRUSH_SMOOTH").sculpt_tool='SMOOTH'
 
+# SECÇÃO PRÉ E PÓS
+
+def RhinPlanoSeccaoDef(self, context):
+    
+    context = bpy.context
+    obj = context.active_object
+    scn = context.scene
+
+    plano = bpy.data.objects['PlanoSeccaoPrePos']
+    corte = plano.location[0]
+
+    face = bpy.data.objects['face']
+    face_copia = bpy.data.objects['face_copia']
+    
+
+    bpy.ops.object.select_all(action='DESELECT')
+    face.select = True
+    face_copia.select = True
+    bpy.context.scene.objects.active = face
+    bpy.ops.object.duplicate()
+    
+    face1 = bpy.data.objects['face.001']
+    face_copia1 = bpy.data.objects['face_copia.001']
+
+# Cria a linha do pré
+    bpy.ops.object.select_all(action='DESELECT')
+    face1.select = True
+    bpy.context.scene.objects.active = face1
+  
+
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    mesh=bmesh.from_edit_mesh(bpy.context.object.data)
+    for v in mesh.verts:
+        v.select = True
+
+    bpy.ops.mesh.select_all(action='TOGGLE') # seleciona tudo
+    bpy.ops.mesh.select_all(action='TOGGLE') # seleciona tudo
+
+    bpy.ops.mesh.bisect(plane_co=(corte, 0, 0), plane_no=(1, 0, 0))
+    bpy.ops.mesh.select_all(action='INVERT')
+    bpy.ops.mesh.delete(type='VERT')
+    bpy.ops.object.mode_set(mode='OBJECT') # Depois de fazer tudo voltar ao modo de Objeto
+
+# Cria a linha do pós
+
+    bpy.ops.object.select_all(action='DESELECT')
+    face_copia1.select = True
+    bpy.context.scene.objects.active = face_copia1
+  
+
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    mesh=bmesh.from_edit_mesh(bpy.context.object.data)
+    for v in mesh.verts:
+        v.select = True
+
+    bpy.ops.mesh.select_all(action='TOGGLE') # seleciona tudo
+    bpy.ops.mesh.select_all(action='TOGGLE') # seleciona tudo
+
+    bpy.ops.mesh.bisect(plane_co=(corte, 0, 0), plane_no=(1, 0, 0))
+    bpy.ops.mesh.select_all(action='INVERT')
+    bpy.ops.mesh.delete(type='VERT')
+    bpy.ops.object.mode_set(mode='OBJECT') # Depois de fazer tudo voltar ao modo de Objeto
+    
+# Deixa apenas as linhas do pré e pós selecionadas
+
+    bpy.ops.object.select_all(action='DESELECT')
+    face1.select = True
+    face_copia1.select = True
+    bpy.context.scene.objects.active = face1        
+
+class RhinPlanoSeccao(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.rhin_plano_seccao"
+    bl_label = "Cria linhas de secção"
+    
+    def execute(self, context):
+        RhinPlanoSeccaoDef(self, context)
+        return {'FINISHED'}
+
 # PRE E PÓS
 
 class RhinPrePos(bpy.types.Panel):
@@ -487,6 +569,9 @@ class RhinPrePos(bpy.types.Panel):
         layout = self.layout
 
         obj = context.object
+
+        row = layout.row()
+        row.operator("object.rhin_plano_seccao", text="Perfil Pré e Pós", icon="PARTICLE_PATH")
 
         row = layout.row()
         row.operator("object.mostra_oculta_face", text="Mostra/Oculta Face", icon="MOD_MASK")
@@ -537,6 +622,7 @@ def register():
     bpy.utils.register_class(RhinSeparaFace)
     bpy.utils.register_class(RhinEstudoEstrutura)
     bpy.utils.register_class(RhinEscultura)
+    bpy.utils.register_class(RhinPlanoSeccao)
     bpy.utils.register_class(RhinPrePos)
     bpy.utils.register_class(RhinDesenhaGuia)
 
@@ -560,6 +646,7 @@ def unregister():
     bpy.utils.unregister_class(RhinSeparaFace)
     bpy.utils.unregister_class(RhinEstudoEstrutura)
     bpy.utils.unregister_class(RhinEscultura)
+    bpy.utils.unregister_class(RhinPlanoSeccao)
     bpy.utils.unregister_class(RhinPrePos)
     bpy.utils.unregister_class(RhinDesenhaGuia)
 
