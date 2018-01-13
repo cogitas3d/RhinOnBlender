@@ -1,3 +1,15 @@
+bl_info = {
+    "name": "RhinOnBlender",
+    "author": "Cicero Moraes, Pablo Maricevich, Rodrigo Dornelles e Everton da Rosa",
+    "version": (1, 0),
+    "blender": (2, 75, 0),
+    "location": "View3D",
+    "description": "Planejamento de Cirurgia Ortognática no Blender",
+    "warning": "",
+    "wiki_url": "",
+    "category": "rhin",
+    }
+
 import bpy
 from math import sqrt
 from bpy.types import Operator
