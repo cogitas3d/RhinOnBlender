@@ -570,6 +570,9 @@ class RhinPrePos(bpy.types.Panel):
 
         obj = context.object
 
+        row = layout.row()        
+        row.label(text="Pré x Pós Digital:")
+
         row = layout.row()
         row.operator("object.rhin_plano_seccao", text="Perfil Pré e Pós", icon="PARTICLE_PATH")
 
@@ -578,6 +581,15 @@ class RhinPrePos(bpy.types.Panel):
 
         row = layout.row()
         row.operator("view3d.clip_border", text="Cria Filete", icon="UV_FACESEL")
+        
+        row = layout.row()        
+        row.label(text="Pós Digital x Pós Real:")
+        
+        row = layout.row()
+        row.operator("object.align_picked_points", text="Alinha Mode Pontos", icon="PARTICLE_TIP")
+
+        row = layout.row()
+        row.operator("object.align_icp", text="Alinha Molde ICP", icon="PARTICLE_PATH")        
 
 # DESENHA GUIA
    
@@ -601,7 +613,9 @@ class RhinDesenhaGuia(bpy.types.Panel):
         circle=row.operator("object.cria_espessura", text="Cria Espessura", icon="MOD_SOLIDIFY")
         
         row = layout.row()
-        row.operator("object.prepara_impressao", text="Prepara Impressão 3D", icon="MOD_REMESH")       
+        row.operator("object.prepara_impressao", text="Prepara Impressão 3D", icon="MOD_REMESH")
+        
+ 
 
 
 def register():
