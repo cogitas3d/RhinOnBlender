@@ -38,43 +38,6 @@ class RhinMostraOcultaFace(bpy.types.Operator):
         RhinMostraOcultaFaceDef(self, context)
         return {'FINISHED'}
 
-
-# LINHA BASE
-
-def RhinLinhaBaseDef(self, context):
-
-    verts = [Vector((0, 0, 125)),
-             Vector((0, 0, -125)),
-            ]
-
-    edges = [[0,1]]
-    
-    faces = []
-
-
-    mesh = bpy.data.meshes.new(name="LinhaBase")
-    mesh.from_pydata(verts, edges, faces)
-    object_data_add(context, mesh, operator=self)
-    
-
-class RhinLinhaBase(Operator, AddObjectHelper):
-    """Create a new Mesh Object"""
-    bl_idname = "mesh.add_linhabase"
-    bl_label = "Add Linha Base"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    def execute(self, context):
-
-        RhinLinhaBaseDef(self, context)
-
-        return {'FINISHED'}
-
-def add_object_button(self, context):
-    self.layout.operator(
-        RhinLinhaBase.bl_idname,
-        text="LinhaBase",
-        icon='VIEW3D')
-
 # PIVO CURSOR
 
 def RhinPivoCursorDef(self, context):
@@ -620,8 +583,7 @@ class RhinDesenhaGuia(bpy.types.Panel):
 
 def register():
     bpy.utils.register_class(RhinMostraOcultaFace)
-    bpy.utils.register_class(RhinLinhaBase)
-    bpy.types.INFO_MT_mesh_add.append(add_object_button)
+#    bpy.types.INFO_MT_mesh_add.append(add_object_button)
     bpy.utils.register_class(RhinPivoCursor)
     bpy.utils.register_class(RhinCriaEspessura)
     bpy.utils.register_class(RhinEsculturaGrab)
@@ -644,8 +606,7 @@ def register():
 
 def unregister():
     bpy.utils.unregister_class(RhinMostraOcultaFace)
-    bpy.utils.unregister_class(RhinLinhaBase)
-    bpy.types.INFO_MT_mesh_add.remove(add_object_button)
+#    bpy.types.INFO_MT_mesh_add.remove(add_object_button)
     bpy.utils.unregister_class(RhinPivoCursor)
     bpy.utils.unregister_class(RhinCriaEspessura)
     bpy.utils.unregister_class(RhinEsculturaGrab)
