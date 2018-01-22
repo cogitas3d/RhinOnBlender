@@ -29,7 +29,7 @@ def RhinCriaPlanoSeccaoDef(self, context):
     scn = context.scene
 
     bpy.ops.mesh.primitive_plane_add()
-    bpy.context.object.name = "BABABABA"
+    bpy.context.object.name = "PlanoSeccaoPrePos"
     bpy.ops.transform.resize(value=(150, 150, 150))
     bpy.ops.transform.rotate(value=1.5708, axis=(0, 1, 0))
     
