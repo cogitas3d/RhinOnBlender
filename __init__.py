@@ -29,7 +29,7 @@ def RhinCriaPlanoSeccaoDef(self, context):
     scn = context.scene
 
     bpy.ops.mesh.primitive_plane_add()
-    bpy.context.object.name = "PlanoSeccaoPrePos"
+    bpy.context.object.name = "BABABABA"
     bpy.ops.transform.resize(value=(150, 150, 150))
     bpy.ops.transform.rotate(value=1.5708, axis=(0, 1, 0))
     
@@ -647,10 +647,10 @@ class RhinPrePos(bpy.types.Panel):
         row.label(text="Pós Digital x Pós Real:")
         
         row = layout.row()
-        row.operator("object.align_picked_points", text="Alinha Mode Pontos", icon="PARTICLE_TIP")
+        row.operator("object.align_picked_points", text="Alinha por Pontos", icon="PARTICLE_TIP")
 
         row = layout.row()
-        row.operator("object.align_icp", text="Alinha Molde ICP", icon="PARTICLE_PATH")        
+        row.operator("object.align_icp", text="Alinha por ICP", icon="PARTICLE_PATH")        
 
 # DESENHA GUIA
    
