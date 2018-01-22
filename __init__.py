@@ -20,6 +20,35 @@ import tempfile
 import subprocess
 import math
 
+def RhinImportaMedNarizDef(self, context):
+    
+    context = bpy.context
+    obj = context.active_object
+    scn = context.scene
+    
+    dirScript = bpy.utils.user_resource('SCRIPTS')
+
+    blendfile = dirScript+"addons/RhinOnBlender-master/objetos.blend"
+    section   = "\\Group\\"
+    object    = "MedidasNariz"
+
+    filepath  = blendfile + section + object
+    directory = blendfile + section
+    filename  = object
+
+    bpy.ops.wm.append(
+        filepath=filepath, 
+        filename=filename,
+        directory=directory)
+        
+class RhinImportaMedNariz(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.rhin_importa_med_nariz"
+    bl_label = "Importa Medidas Nariz"
+    
+    def execute(self, context):
+        RhinImportaMedNarizDef(self, context)
+        return {'FINISHED'}
 
 # CRIA PLANO SECÇÃO
 
@@ -412,27 +441,30 @@ class RhinEstudaFaces(bpy.types.Panel):
         linha=row.operator("mesh.add_linhabase", text="Linha Lateral Hor", icon="ZOOMOUT")
         linha.location=(200,30,0)
         linha.rotation=(1.5708,0,0)
+        
+        row = layout.row()
+        row.operator("view3d.snap_cursor_to_selected", text="Pivô para Seleção", icon="RESTRICT_SELECT_OFF")
+        
+        row = layout.row()
+        row.operator("object.pivo_cursor", text="Pivô no Cursor", icon="CURSOR")
+
 
 #        row = layout.row()
 #        row.operator("object.align_picked_points", text="Alinha por Pontos", icon="PARTICLE_TIP")
 
+        row = layout.row()        
+        row.label(text="Gabarito:")
 
 
-# REDIMENSIONAMENTO
-   
-class RhinRedimensionamento(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Redimensionamento"
-    bl_idname = "rhin_redimensionamento"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
+        row = layout.row()
+        linha=row.operator("object.rhin_importa_med_nariz", text="Importar Medidas Nariz", icon="FULLSCREEN_ENTER")
+        
+        row = layout.row()
+        row.operator("object.distancia_objetos", text="Atualiza Fator/Ãngulo", icon="STICKY_UVS_DISABLE")        
 
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-
+        row = layout.row()        
+        row.label(text="Ferramentas de Medidas:")
+        
 
         row = layout.row()
         row.operator("measureit.runopenglbutton", text="Ver/Ocultar Medidas", icon="ARROW_LEFTRIGHT")
@@ -447,7 +479,8 @@ class RhinRedimensionamento(bpy.types.Panel):
         row = layout.row()
         row.operator("view3d.ruler", text="Medida/Ângulo Rápido", icon="IPO_LINEAR")
         
-                
+
+
 # SEPARAR FACE
    
 class RhinSeparaFace(bpy.types.Panel):
@@ -476,35 +509,6 @@ class RhinSeparaFace(bpy.types.Panel):
         row = layout.row()
         circle=row.operator("object.rosto_cria_copia", text="Copia Face", icon="NODETREE")
         
-        
-# ESTUDO DE ESTRUTURA
-   
-class RhinEstudoEstrutura(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Estudo de Estrutura"
-    bl_idname = "rhin_estudo_estrutura"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
-    
-
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-                
-        row = layout.row()
-        row.operator("object.distancia_objetos", text="Atualiza Fator/Ãngulo", icon="STICKY_UVS_DISABLE")
-
-        row = layout.row()
-        row.operator("view3d.snap_cursor_to_selected", text="Pivô para Seleção", icon="RESTRICT_SELECT_OFF")
-        
-        row = layout.row()
-        row.operator("object.pivo_cursor", text="Pivô no Cursor", icon="CURSOR")
-        
-
-#bpy.context.space_data.pivot_point = 'CURSOR'
-
         
         
 # ESCULPIR
@@ -695,6 +699,7 @@ class RhinDesenhaGuia(bpy.types.Panel):
 
 
 def register():
+    bpy.utils.register_class(RhinImportaMedNariz)
     bpy.utils.register_class(RhinCriaPlanoSeccao)
     bpy.utils.register_class(RhinMostraOcultaFace)
 #    bpy.types.INFO_MT_mesh_add.append(add_object_button)
@@ -708,10 +713,8 @@ def register():
     bpy.utils.register_class(RhinCriaFotogrametria)
     bpy.utils.register_class(RhinImportaFotogrametria)
     bpy.utils.register_class(RhinAlinhaFaces)
-    bpy.utils.register_class(RhinEstudaFaces)
-    bpy.utils.register_class(RhinRedimensionamento)
     bpy.utils.register_class(RhinSeparaFace)
-    bpy.utils.register_class(RhinEstudoEstrutura)
+    bpy.utils.register_class(RhinEstudaFaces)
     bpy.utils.register_class(RhinEscultura)
     bpy.utils.register_class(RhinPlanoSeccao)
     bpy.utils.register_class(RhinPrePos)
@@ -720,6 +723,7 @@ def register():
     
 
 def unregister():
+    bpy.utils.unregister_class(RhinImportaMedNariz)
     bpy.utils.unregister_class(RhinCriaPlanoSeccao)
     bpy.utils.unregister_class(RhinMostraOcultaFace)
 #    bpy.types.INFO_MT_mesh_add.remove(add_object_button)
@@ -733,10 +737,8 @@ def unregister():
     bpy.utils.unregister_class(RhinCriaFotogrametria)
     bpy.utils.unregister_class(RhinImportaFotogrametria)
     bpy.utils.unregister_class(RhinAlinhaFaces)
-    bpy.utils.unregister_class(RhinEstudaFaces)
-    bpy.utils.unregister_class(RhinRedimensionamento)
     bpy.utils.unregister_class(RhinSeparaFace)
-    bpy.utils.unregister_class(RhinEstudoEstrutura)
+    bpy.utils.unregister_class(RhinEstudaFaces)
     bpy.utils.unregister_class(RhinEscultura)
     bpy.utils.unregister_class(RhinPlanoSeccao)
     bpy.utils.unregister_class(RhinPrePos)
