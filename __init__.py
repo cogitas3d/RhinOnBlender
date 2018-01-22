@@ -18,6 +18,7 @@ from bpy_extras.object_utils import AddObjectHelper, object_data_add
 from mathutils import Vector
 import tempfile
 import subprocess
+import math
 
 
 # CRIA PLANO SECÇÃO
@@ -245,7 +246,21 @@ def RhinDistanciaObjetosDef(self, context):
     Fator = distanciaMenor / distanciaMaior
     print(Fator)
     
-    bpy.data.objects["Text"].data.body = str(Fator)
+    bpy.data.objects["TextFator"].data.body = str(int(Fator)+float(str(Fator-int(Fator))[1:4]))
+    
+    Anl = bpy.data.objects['Empty_Na_Atras']
+    Bnl = bpy.data.objects['Empty_Na_Frente']
+
+    AnlBnl = math.sqrt( (Anl.location[1] - Bnl.location[1])**2 + (Anl.location[2] - Bnl.location[2])**2 )
+
+    BnlCnl = math.sqrt( (Bnl.location[1] - Bnl.location[1])**2 + (Bnl.location[2] - Anl.location[2])**2 )
+
+    valorAng = BnlCnl / AnlBnl
+
+    angNasolabial = (math.asin(valorAng)*180/math.pi)+90
+
+
+    bpy.data.objects["TextNasolabial"].data.body = str(int(angNasolabial)+float(str(angNasolabial-int(angNasolabial))[1:4]))+'º'
 
     return Fator
 
@@ -479,7 +494,7 @@ class RhinEstudoEstrutura(bpy.types.Panel):
         obj = context.object
                 
         row = layout.row()
-        row.operator("object.distancia_objetos", text="Fator do Nariz", icon="STICKY_UVS_DISABLE")
+        row.operator("object.distancia_objetos", text="Atualiza Fator/Ãngulo", icon="STICKY_UVS_DISABLE")
 
         row = layout.row()
         row.operator("view3d.snap_cursor_to_selected", text="Pivô para Seleção", icon="RESTRICT_SELECT_OFF")
