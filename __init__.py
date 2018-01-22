@@ -16,7 +16,33 @@ from math import sqrt
 from bpy.types import Operator
 from bpy_extras.object_utils import AddObjectHelper, object_data_add
 from mathutils import Vector
+import tempfile
+import subprocess
 
+
+# CRIA PLANO SECÇÃO
+
+def RhinCriaPlanoSeccaoDef(self, context):
+    
+    context = bpy.context
+    obj = context.active_object
+    scn = context.scene
+
+    bpy.ops.mesh.primitive_plane_add()
+    bpy.context.object.name = "PlanoSeccaoPrePos"
+    bpy.ops.transform.resize(value=(150, 150, 150))
+    bpy.ops.transform.rotate(value=1.5708, axis=(0, 1, 0))
+    
+
+
+class RhinCriaPlanoSeccao(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "mesh.rhin_plano_seccao"
+    bl_label = "Cria Plano de Secção"
+    
+    def execute(self, context):
+        RhinCriaPlanoSeccaoDef(self, context)
+        return {'FINISHED'}
 
 # MOSTRA/OCULTA FACE
 
@@ -103,7 +129,7 @@ class RhinEsculturaGrab(bpy.types.Operator):
 
 # CRIA COPIA ROSTO
 
-def RhinRhinRostoCriaCopiaDef(self, context):
+def RhinRostoCriaCopiaDef(self, context):
     
     context = bpy.context
     obj = context.active_object
@@ -127,6 +153,69 @@ class RhinRostoCriaCopia(bpy.types.Operator):
     def execute(self, context):
         RhinRostoCriaCopiaDef(self, context)
         return {'FINISHED'}
+
+# RNDERIZAÇÕES PRÉ E PÓS
+
+def RhinRenderPrePosDef(self, context):
+
+    context = bpy.context
+    obj = context.active_object
+    scn = context.scene
+
+    tmpdir = tempfile.gettempdir()
+    tmpImgPos = tmpdir+"/ImgPos.png"
+    tmpImgPre = tmpdir+"/ImgPre.png"
+    tmpImgPrePos = tmpdir+"/ImgPrePos.png"
+    
+    
+    face = bpy.data.objects['face']
+    face_copia = bpy.data.objects['face_copia']
+    
+    # Gera imagem do pós
+
+    bpy.ops.object.select_all(action='DESELECT')
+    face.select = True
+    bpy.context.scene.objects.active = face
+    bpy.ops.object.select_all(action='INVERT') # inverte seleção
+    bpy.ops.object.hide_view_set(unselected=False) # deixe seleção insivível
+    bpy.ops.render.opengl()    
+    bpy.data.images['Render Result'].save_render( tmpImgPos ) 
+    bpy.ops.object.hide_view_clear() # tudo visível
+    
+    # Gera imagem do pré
+
+    bpy.ops.object.select_all(action='DESELECT')
+    face_copia.select = True
+    bpy.context.scene.objects.active = face_copia
+    bpy.ops.object.select_all(action='INVERT')
+    bpy.ops.object.hide_view_set(unselected=False)
+    bpy.ops.render.opengl()    
+    bpy.data.images['Render Result'].save_render( tmpImgPre ) 
+    bpy.ops.object.hide_view_clear()
+
+    subprocess.call(['composite', '-blend', '50', '-gravity', 'South', tmpImgPre, tmpImgPos, '-alpha', 'Set', tmpImgPrePos])
+ 
+    bpy.ops.image.open(filepath="tmpImgPrePos", directory="/tmp/", files=[{"name":"ImgPrePos.png", "name":"ImgPrePos.png"}], relative_path=True, show_multiview=False)
+    imagePrePosImgEd = bpy.data.images['ImgPrePos.png']
+    bpy.data.screens['UV Editing'].areas[1].spaces[0].image = imagePrePosImgEd
+    
+    bpy.ops.image.open(filepath="tmpImgPre", directory="/tmp/", files=[{"name":"ImgPre.png", "name":"ImgPre.png"}], relative_path=True, show_multiview=False)
+    imagePreImgEd = bpy.data.images['ImgPre.png']
+    bpy.data.screens['UV Editing'].areas[1].spaces[0].image = imagePreImgEd
+    
+    bpy.ops.image.open(filepath="tmpImgPos", directory="/tmp/", files=[{"name":"ImgPos.png", "name":"ImgPos.png"}], relative_path=True, show_multiview=False)
+    imagePosImgEd = bpy.data.images['ImgPos.png']
+    bpy.data.screens['UV Editing'].areas[1].spaces[0].image = imagePosImgEd
+    
+class RhinRenderPrePos(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "render.render_pre_pos"
+    bl_label = "Importa estrutura de bones"
+    
+    def execute(self, context):
+        RhinRenderPrePosDef(self, context)
+        return {'FINISHED'}
+
 
 # DISTANCIA OBJETOS    
 
@@ -537,10 +626,19 @@ class RhinPrePos(bpy.types.Panel):
         row.label(text="Pré x Pós Digital:")
 
         row = layout.row()
-        row.operator("object.rhin_plano_seccao", text="Perfil Pré e Pós", icon="PARTICLE_PATH")
+
 
         row = layout.row()
         row.operator("object.mostra_oculta_face", text="Mostra/Oculta Face", icon="MOD_MASK")
+
+        row = layout.row()
+        row.operator("render.render_pre_pos", text="Imagem Pré e Pós", icon="META_ELLIPSOID")
+
+        row = layout.row()
+        circle=row.operator("mesh.rhin_plano_seccao", text="Plano de Secção", icon="MESH_PLANE")
+
+        row = layout.row()
+        row.operator("object.rhin_plano_seccao", text="Linhas Pré e Pós", icon="PARTICLE_PATH")
 
         row = layout.row()
         row.operator("view3d.clip_border", text="Cria Filete", icon="UV_FACESEL")
@@ -582,12 +680,14 @@ class RhinDesenhaGuia(bpy.types.Panel):
 
 
 def register():
+    bpy.utils.register_class(RhinCriaPlanoSeccao)
     bpy.utils.register_class(RhinMostraOcultaFace)
 #    bpy.types.INFO_MT_mesh_add.append(add_object_button)
     bpy.utils.register_class(RhinPivoCursor)
     bpy.utils.register_class(RhinCriaEspessura)
     bpy.utils.register_class(RhinEsculturaGrab)
     bpy.utils.register_class(RhinRostoCriaCopia)
+    bpy.utils.register_class(RhinRenderPrePos)
     bpy.utils.register_class(RhinDistanciaObjetos)
     bpy.utils.register_class(RhinZoomCena)
     bpy.utils.register_class(RhinCriaFotogrametria)
@@ -605,12 +705,14 @@ def register():
     
 
 def unregister():
+    bpy.utils.unregister_class(RhinCriaPlanoSeccao)
     bpy.utils.unregister_class(RhinMostraOcultaFace)
 #    bpy.types.INFO_MT_mesh_add.remove(add_object_button)
     bpy.utils.unregister_class(RhinPivoCursor)
     bpy.utils.unregister_class(RhinCriaEspessura)
     bpy.utils.unregister_class(RhinEsculturaGrab)
     bpy.utils.unregister_class(RhinRostoCriaCopia)
+    bpy.utils.unregister_class(RhinRenderPrePos)
     bpy.utils.unregister_class(RhinDistanciaObjetos)
     bpy.utils.unregister_class(RhinZoomCena)
     bpy.utils.unregister_class(RhinCriaFotogrametria)
