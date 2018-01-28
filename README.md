@@ -1,7 +1,7 @@
-# OrtogOnBlender
 
-![GitHub Logo](http://www.ciceromoraes.com.br/ups/OrtogOnBlender.jpg)
+# RhinOnBlender
 
+![GitHub Logo](http://www.ciceromoraes.com.br/blog/wp-content/uploads/2017/09/Blend_RhinOnBlender.jpg)
 
 O RhinOnBlender é um addon para planejamento de rinoplastia digital. O objetivo dele é tornar o procedimento mais acessível aos especialistas do campo da cirurgia plástica ao mesmo tempo em que promove o uso de software livre e gratuito.
 
@@ -50,5 +50,6 @@ O RhinOnBlender é um addon para planejamento de rinoplastia digital. O objetivo
 [Dr. Rodrigo Dornelles](http://www.metropolitan.med.br/index.html) - Cirurgião Plástico.
 [Dr. Everton da Rosa](http://fb.me/drevertondarosa) - Cirurgião Dentista.
 
-Agradecimentos
+## Agradecimentos
+
 Pierre Moulon, [Michael Goesele](https://www.gcc.tu-darmstadt.de/home/proj/mve/index.en.jsp), Patrick Moore, Fabian Langguth, Kalyan Sunkavalli, Sunil Hadap, Simon Fuhrmann, Nils Moehrle, Michael Waechter e Dalai Felinto.
