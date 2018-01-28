@@ -45,10 +45,10 @@ O RhinOnBlender é um addon para planejamento de rinoplastia digital. O objetivo
 
 ## Desenvolvedores
 
-[Cicero Moraes](www.ciceromoraes.com.br) - 3D designer.
-[Dr. Pablo Maricevich](http://avivacirurgiaplastica.com.br/) - Cirurgião Plástico.
-[Dr. Rodrigo Dornelles](http://www.metropolitan.med.br/index.html) - Cirurgião Plástico.
-[Dr. Everton da Rosa](http://fb.me/drevertondarosa) - Cirurgião Dentista.
+* [Cicero Moraes](www.ciceromoraes.com.br) - 3D designer.
+* [Dr. Pablo Maricevich](http://avivacirurgiaplastica.com.br/) - Cirurgião Plástico.
+* [Dr. Rodrigo Dornelles](http://www.metropolitan.med.br/index.html) - Cirurgião Plástico.
+* [Dr. Everton da Rosa](http://fb.me/drevertondarosa) - Cirurgião Dentista.
 
 ## Agradecimentos
 
