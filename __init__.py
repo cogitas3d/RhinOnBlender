@@ -225,15 +225,15 @@ def RhinRenderPrePosDef(self, context):
 
     subprocess.call(['composite', '-blend', '50', '-gravity', 'South', tmpImgPre, tmpImgPos, '-alpha', 'Set', tmpImgPrePos])
  
-    bpy.ops.image.open(filepath="tmpImgPrePos", directory="/tmp/", files=[{"name":"ImgPrePos.png", "name":"ImgPrePos.png"}], relative_path=True, show_multiview=False)
+    bpy.ops.image.open(filepath="tmpImgPrePos", directory=tmpdir, files=[{"name":"ImgPrePos.png", "name":"ImgPrePos.png"}], relative_path=True, show_multiview=False)
     imagePrePosImgEd = bpy.data.images['ImgPrePos.png']
     bpy.data.screens['UV Editing'].areas[1].spaces[0].image = imagePrePosImgEd
     
-    bpy.ops.image.open(filepath="tmpImgPre", directory="/tmp/", files=[{"name":"ImgPre.png", "name":"ImgPre.png"}], relative_path=True, show_multiview=False)
+    bpy.ops.image.open(filepath="tmpImgPre", directory=tmpdir, files=[{"name":"ImgPre.png", "name":"ImgPre.png"}], relative_path=True, show_multiview=False)
     imagePreImgEd = bpy.data.images['ImgPre.png']
     bpy.data.screens['UV Editing'].areas[1].spaces[0].image = imagePreImgEd
     
-    bpy.ops.image.open(filepath="tmpImgPos", directory="/tmp/", files=[{"name":"ImgPos.png", "name":"ImgPos.png"}], relative_path=True, show_multiview=False)
+    bpy.ops.image.open(filepath="tmpImgPos", directory=tmpdir, files=[{"name":"ImgPos.png", "name":"ImgPos.png"}], relative_path=True, show_multiview=False)
     imagePosImgEd = bpy.data.images['ImgPos.png']
     bpy.data.screens['UV Editing'].areas[1].spaces[0].image = imagePosImgEd
     
