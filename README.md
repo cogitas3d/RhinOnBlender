@@ -1,4 +1,5 @@
 
+
 # RhinOnBlender
 
 ![GitHub Logo](http://www.ciceromoraes.com.br/blog/wp-content/uploads/2017/09/Blend_RhinOnBlender.jpg)
@@ -28,10 +29,12 @@ O RhinOnBlender é um addon para planejamento de rinoplastia digital. O objetivo
 ## Dependências
 
 * OrtogOnBlender - https://github.com/cogitas3d/OrtogOnBlender
+* Imagemagick¹ - https://www.imagemagick.org/script/download.php
 
-* Imagemagick - https://www.imagemagick.org/script/download.php
+¹ Para instalar no Mac OS X use o comando: `brew install imagemagick` 
+Você vai aprender a usar esse comando no tutorial que será fornecido logo abaixo.
 
-## Instalação
+## Instalação Básica
 
 * Baixe o arquivo em “Clone or download”
 
@@ -42,6 +45,18 @@ O RhinOnBlender é um addon para planejamento de rinoplastia digital. O objetivo
 * Ativar a opção `rhin:RhinOnBlender` e configure os caminhos dos scripts expandindo a setinha do lado esquerdo.
 
 * Para manter o addon ativo clique em: `Save User Settings`
+
+## Instalação Detalhada
+
+Tutorial para instalação no Windows¹: [https://goo.gl/xobPsq](https://goo.gl/xobPsq)
+
+Tutorial para instalação no Mac OS X²: [https://goo.gl/CNTjrB](https://goo.gl/CNTjrB)
+
+¹ Siga o passo-a-passo, o RhinOnBlender é instalado juntamente com o OrtogOnBlender.
+
+² Siga o passo-a-passo e ao final baixe e instale o .zip que pode ser baixado na parte direita superior desta página.
+
+OBS: As fotos da cabeça para proceder com a fotogrametria estarão dentro de: **OrtogOnBlender/ARQUIVOS/RINOPLASTIA**
 
 ## Desenvolvedores
 
