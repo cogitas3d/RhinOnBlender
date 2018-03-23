@@ -19,6 +19,84 @@ from mathutils import Vector
 import tempfile
 import subprocess
 import math
+from os.path import expanduser
+import platform
+import shutil
+
+
+def RhinGeraModeloFotoDef(self, context):
+    scn = context.scene
+
+    tmpdir = tempfile.gettempdir()
+
+    homeall = expanduser("~")
+
+    try:
+
+        OpenMVGtmpDir = tmpdir + '/OpenMVG'
+        tmpOBJface = tmpdir + '/MVS/scene_dense_mesh_texture2.obj'
+
+        if platform.system() == "Linux":
+            OpenMVGPath = homeall + '/Programs/OrtogOnBlender/openMVG/software/SfM/SfM_SequentialPipeline.py'
+            OpenMVSPath = homeall + '/Programs/OrtogOnBlender/openMVS/OpenMVSrhin.sh'
+
+        if platform.system() == "Windows":
+            OpenMVGPath = 'C:/OrtogOnBlender/openMVGWin/software/SfM/SfM_SequentialPipeline.py'
+            OpenMVSPath = 'C:/OrtogOnBlender/openMVSWin/OpenMVSrhin.bat'
+
+        if platform.system() == "Darwin":
+            OpenMVGPath = homeall + '/OrtogOnBlender/openMVGMAC/SfM_SequentialPipeline.py'
+            OpenMVSPath = homeall + '/OrtogOnBlender/openMVSMAC/OpenMVSrhinMAC.sh'
+
+        shutil.rmtree(tmpdir + '/OpenMVG', ignore_errors=True)
+        shutil.rmtree(tmpdir + '/MVS', ignore_errors=True)
+
+        if platform.system() == "Linux":
+            subprocess.call(['python', OpenMVGPath, scn.my_tool.path, OpenMVGtmpDir])
+
+        if platform.system() == "Windows":
+            subprocess.call(['C:/OrtogOnBlender/Python27/python', OpenMVGPath, scn.my_tool.path, OpenMVGtmpDir])
+
+        if platform.system() == "Darwin":
+            subprocess.call(['python', OpenMVGPath, scn.my_tool.path, OpenMVGtmpDir])
+
+        subprocess.call(OpenMVSPath, shell=True)
+
+        #    subprocess.call([ 'meshlabserver', '-i', tmpdir+'scene_dense_mesh_texture.ply', '-o', tmpdir+'scene_dense_mesh_texture2.obj', '-om', 'vn', 'wt' ])
+
+        bpy.ops.import_scene.obj(filepath=tmpOBJface, filter_glob="*.obj;*.mtl")
+
+        scene_dense_mesh_texture2 = bpy.data.objects['scene_dense_mesh_texture2']
+
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.context.scene.objects.active = scene_dense_mesh_texture2
+        bpy.data.objects['scene_dense_mesh_texture2'].select = True
+
+        bpy.context.object.data.use_auto_smooth = False
+        bpy.context.object.active_material.specular_hardness = 60
+        bpy.context.object.active_material.diffuse_intensity = 0.6
+        bpy.context.object.active_material.specular_intensity = 0.3
+        bpy.context.object.active_material.specular_color = (0.233015, 0.233015, 0.233015)
+        #    bpy.ops.object.modifier_add(type='SMOOTH')
+        #    bpy.context.object.modifiers["Smooth"].factor = 2
+        #    bpy.context.object.modifiers["Smooth"].iterations = 3
+        #    bpy.ops.object.convert(target='MESH')
+        bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN')
+        bpy.ops.view3d.view_all(center=False)
+        bpy.ops.file.pack_all()
+
+    except RuntimeError:
+        bpy.context.window_manager.popup_menu(ERROruntimeFotosDef, title="Atenção!", icon='INFO')
+
+
+class RhinGeraModeloFoto(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.rhin_gera_modelo_foto"
+    bl_label = "Gera Modelos Foto"
+
+    def execute(self, context):
+        RhinGeraModeloFotoDef(self, context)
+        return {'FINISHED'}
 
 def RhinImportaMedNarizDef(self, context):
     
@@ -369,7 +447,7 @@ class RhinCriaFotogrametria(bpy.types.Panel):
         col.prop(scn.my_tool, "path", text="")
  
         row = layout.row()
-        row.operator("object.gera_modelo_foto", text="Iniciar Fotogrametria", icon="IMAGE_DATA")
+        row.operator("object.rhin_gera_modelo_foto", text="Iniciar Fotogrametria", icon="IMAGE_DATA")
 
         row = layout.row()
         row.operator("object.gera_modelo_foto_smvs", text="SMVS+Meshlab", icon="IMAGE_DATA")
@@ -411,6 +489,8 @@ class RhinAlinhaFaces(bpy.types.Panel):
         col = self.layout.column(align = True)
         col.prop(context.scene, "medida_real")  
         layout.operator("object.alinha_rosto2", text="2 - Alinha e Redimensiona", icon="LAMP_POINT")
+
+        layout.operator("object.rotaciona_z", text="Flip Z", icon="FORCE_MAGNETIC")
 
 
 # ESTUDA FACE
@@ -657,7 +737,7 @@ class RhinPrePos(bpy.types.Panel):
         circle=row.operator("mesh.rhin_plano_seccao", text="Plano de Secção", icon="MESH_PLANE")
 
         row = layout.row()
-        row.operator("object.rhin_plano_seccao", text="Linhas Pré e Pós", icon="PARTICLE_PATH")
+        row.operator("object.rhin_plano_seccao", text=" Cria Linhas Pré e Pós", icon="PARTICLE_PATH")
 
         row = layout.row()
         row.operator("view3d.clip_border", text="Cria Filete", icon="UV_FACESEL")
@@ -699,6 +779,7 @@ class RhinDesenhaGuia(bpy.types.Panel):
 
 
 def register():
+    bpy.utils.register_class(RhinGeraModeloFoto)
     bpy.utils.register_class(RhinImportaMedNariz)
     bpy.utils.register_class(RhinCriaPlanoSeccao)
     bpy.utils.register_class(RhinMostraOcultaFace)
@@ -723,6 +804,7 @@ def register():
     
 
 def unregister():
+    bpy.utils.unregister_class(RhinGeraModeloFoto)
     bpy.utils.unregister_class(RhinImportaMedNariz)
     bpy.utils.unregister_class(RhinCriaPlanoSeccao)
     bpy.utils.unregister_class(RhinMostraOcultaFace)
