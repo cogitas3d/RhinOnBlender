@@ -45,12 +45,8 @@ def RhinGeraModeloFotoDef(self, context):
             OpenMVSPath = 'C:/OrtogOnBlender/openMVSWin/OpenMVSrhin.bat'
             
         if platform.system() == "Darwin":
-            if platform.release() == '15.6.0':
-                OpenMVGPath = '/OrtogOnBlender/openMVGMACelcap/SfM_SequentialPipeline.py'
-                OpenMVSPath = '/OrtogOnBlender/openMVSMACelcap/OpenMVSrhinMAC.sh'            
-        else:
-            OpenMVGPath = '/OrtogOnBlender/openMVGMAC/SfM_SequentialPipeline.py' 
-            OpenMVSPath = '/OrtogOnBlender/openMVSMAC/OpenMVSrhinMAC.sh'
+            OpenMVGPath = '/OrtogOnBlender/openMVGMACelcap/SfM_SequentialPipeline.py'
+            OpenMVSPath = '/OrtogOnBlender/openMVSMACelcap/openMVSarcadaMAC.sh' 
 
         shutil.rmtree(tmpdir + '/OpenMVG', ignore_errors=True)
         shutil.rmtree(tmpdir + '/MVS', ignore_errors=True)
