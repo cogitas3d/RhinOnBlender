@@ -84,6 +84,10 @@ def RhinGeraModeloFotoDef(self, context):
         bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN')
         bpy.ops.view3d.view_all(center=False)
         bpy.ops.file.pack_all()
+        
+        bpy.ops.object.modifier_add(type='SMOOTH')
+        bpy.context.object.modifiers["Smooth"].factor = 2
+        bpy.context.object.modifiers["Smooth"].iterations = 4
 
     except RuntimeError:
         bpy.context.window_manager.popup_menu(ERROruntimeFotosDef, title="Atenção!", icon='INFO')
