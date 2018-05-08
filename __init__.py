@@ -111,11 +111,8 @@ def RhinImportaMedNarizDef(self, context):
     dirScript = bpy.utils.user_resource('SCRIPTS')
 
     
-<<<<<<< Local Changes
-    if platform.system() == "Linux" or if platform.system() == "Darwin"::
-=======
+
     if platform.system() == "Linux" or platform.system() == "Darwin":
->>>>>>> External Changes
     
         blendfile = dirScript+"addons/RhinOnBlender-master/objetos.blend"
         section   = "\\Group\\"
@@ -125,10 +122,6 @@ def RhinImportaMedNarizDef(self, context):
         directory = blendfile + section
         filename  = object
         
-<<<<<<< Local Changes
-    if platform.system() == "Windows":
-=======
->>>>>>> External Changes
     
     if platform.system() == "Windows":
         dirScript = 'C:/OrtogOnBlender/Blender/2.78/scripts/'
