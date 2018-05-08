@@ -1,7 +1,7 @@
 bl_info = {
     "name": "RhinOnBlender",
     "author": "Cicero Moraes, Pablo Maricevich, Rodrigo Dornelles e Everton da Rosa",
-    "version": (1, 0),
+    "version": (1, 1),
     "blender": (2, 75, 0),
     "location": "View3D",
     "description": "Planejamento de Rinoplastia no Blender",
@@ -43,10 +43,14 @@ def RhinGeraModeloFotoDef(self, context):
         if platform.system() == "Windows":
             OpenMVGPath = 'C:/OrtogOnBlender/openMVGWin/software/SfM/SfM_SequentialPipeline.py'
             OpenMVSPath = 'C:/OrtogOnBlender/openMVSWin/OpenMVSrhin.bat'
-
+            
         if platform.system() == "Darwin":
-            OpenMVGPath = homeall + '/OrtogOnBlender/openMVGMAC/SfM_SequentialPipeline.py'
-            OpenMVSPath = homeall + '/OrtogOnBlender/openMVSMAC/OpenMVSrhinMAC.sh'
+            if platform.release() == '15.6.0':
+                OpenMVGPath = '/OrtogOnBlender/openMVGMACelcap/SfM_SequentialPipeline.py'
+                OpenMVSPath = '/OrtogOnBlender/openMVSMACelcap/OpenMVSrhinMAC.sh'            
+        else:
+            OpenMVGPath = '/OrtogOnBlender/openMVGMAC/SfM_SequentialPipeline.py' 
+            OpenMVSPath = '/OrtogOnBlender/openMVSMAC/OpenMVSrhinMAC.sh'
 
         shutil.rmtree(tmpdir + '/OpenMVG', ignore_errors=True)
         shutil.rmtree(tmpdir + '/MVS', ignore_errors=True)
@@ -106,13 +110,34 @@ def RhinImportaMedNarizDef(self, context):
     
     dirScript = bpy.utils.user_resource('SCRIPTS')
 
-    blendfile = dirScript+"addons/RhinOnBlender-master/objetos.blend"
-    section   = "\\Group\\"
-    object    = "MedidasNariz"
+    
+<<<<<<< Local Changes
+    if platform.system() == "Linux" or if platform.system() == "Darwin"::
+=======
+    if platform.system() == "Linux" or platform.system() == "Darwin":
+>>>>>>> External Changes
+    
+        blendfile = dirScript+"addons/RhinOnBlender-master/objetos.blend"
+        section   = "\\Group\\"
+        object    = "MedidasNariz"
 
-    filepath  = blendfile + section + object
-    directory = blendfile + section
-    filename  = object
+        filepath  = blendfile + section + object
+        directory = blendfile + section
+        filename  = object
+        
+<<<<<<< Local Changes
+    if platform.system() == "Windows":
+=======
+>>>>>>> External Changes
+    
+    if platform.system() == "Windows":
+        dirScript = 'C:/OrtogOnBlender/Blender/2.78/scripts/'
+        section   = "\\Group\\"
+        object    = "MedidasNariz"      
+
+        filepath  = blendfile + section + object
+        directory = blendfile + section
+        filename  = object
 
     bpy.ops.wm.append(
         filepath=filepath, 
