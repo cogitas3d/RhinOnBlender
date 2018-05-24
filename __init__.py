@@ -1,7 +1,7 @@
 bl_info = {
     "name": "RhinOnBlender",
     "author": "Cicero Moraes, Pablo Maricevich, Rodrigo Dornelles e Everton da Rosa",
-    "version": (1, 0),
+    "version": (1, 0, 2),
     "blender": (2, 75, 0),
     "location": "View3D",
     "description": "Planejamento de Rinoplastia no Blender",
