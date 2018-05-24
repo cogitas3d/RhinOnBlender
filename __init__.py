@@ -22,14 +22,80 @@ import math
 from os.path import expanduser
 import platform
 import shutil
+from os import listdir
+from os.path import isfile, join
+import exifread
 
 
 def RhinGeraModeloFotoDef(self, context):
+
     scn = context.scene
 
     tmpdir = tempfile.gettempdir()
 
     homeall = expanduser("~")
+
+    # TESTA CAMERA
+
+    mypath = scn.my_tool.path  # Tem que ter o / no final
+
+    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+
+    FotoTeste = onlyfiles[0]
+
+    with open(mypath + FotoTeste, 'rb') as f_jpg:
+        tags = exifread.process_file(f_jpg, details=True)
+        print (tags['Image Model'])
+        CamModel = str(tags['Image Model'])
+    #   print("CamModel:", CamModel)
+
+    # TESTA MODELO CAMERA
+
+    if platform.system() == "Linux":
+        camDatabase = "/home/cogitas3d/Programs/OrtogOnBlender/openMVG/sensor_width_camera_database.txt"
+
+    if platform.system() == "Darwin":
+        camDatabase = "/OrtogOnBlender/openMVGMACelcap/sensor_width_camera_database.txt"
+
+    if platform.system() == "Windows":
+        camDatabase = "C:/OrtogOnBlender/openMVGWIN/sensor_width_camera_database.txt"
+        print("EH WINDOWS")
+
+    infile = open(camDatabase, "r")
+
+    numlines = 0
+    found = 0
+    for line in infile:
+        numlines += 1
+        while 1:
+            str_found_at = line.find(CamModel)
+            if str_found_at == -1:
+                # string not found in line ...
+                # go to next (ie break out of the while loop)
+                break
+            else:
+                # string found in line
+                found += 1
+                # more than once in this line?
+                # lets strip string and anything prior from line and
+                # then go through the testing loop again
+                line = line[str_found_at + len(CamModel):]
+    infile.close()
+
+    print(CamModel, "was found", found, "times in", numlines, "lines")
+
+    if found == 0:
+        print("Nao apareceu!")
+
+        with open(camDatabase, 'a') as file:
+            inputCam = CamModel, "; 3.80"
+            print(inputCam)
+            #           if platform.system() == "Darwin" or platform.system() == "Windows":
+            #              file.write("\n")
+            file.write("\n")
+            file.writelines(inputCam)  # Escreve o modelo de camera no arquivo
+
+# GERA FOTOGRAMETRIA
 
     try:
 
@@ -81,11 +147,17 @@ def RhinGeraModeloFotoDef(self, context):
         bpy.ops.object.modifier_add(type='SMOOTH')
         bpy.context.object.modifiers["Smooth"].factor = 2
         bpy.context.object.modifiers["Smooth"].iterations = 3
-        bpy.ops.object.convert(target='MESH')
+        # bpy.ops.object.convert(target='MESH')
 
         bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN')
         bpy.ops.view3d.view_all(center=False)
         bpy.ops.file.pack_all()
+
+
+        # MutRes
+        bpy.ops.object.modifier_add(type='MULTIRES')
+        bpy.context.object.modifiers["Multires"].show_viewport = False
+        bpy.ops.object.multires_subdivide(modifier="Multires")
 
         # Displacement
 
@@ -99,6 +171,11 @@ def RhinGeraModeloFotoDef(self, context):
         bpy.context.object.modifiers["Displace"].texture_coords = 'UV'
         bpy.context.object.modifiers["Displace"].strength = 0.035
         bpy.context.object.modifiers["Displace"].mid_level = 0.5
+
+        #Comprime modificadores
+        bpy.context.object.modifiers["Smooth"].show_expanded = False
+        bpy.context.object.modifiers["Multires"].show_expanded = False
+        bpy.context.object.modifiers["Displace"].show_expanded = False
 
         bpy.ops.object.shade_smooth()
 
