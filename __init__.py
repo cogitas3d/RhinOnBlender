@@ -1,7 +1,7 @@
 bl_info = {
     "name": "RhinOnBlender",
     "author": "Cicero Moraes, Pablo Maricevich, Rodrigo Dornelles e Everton da Rosa",
-    "version": (1, 1),
+    "version": (1, 0),
     "blender": (2, 75, 0),
     "location": "View3D",
     "description": "Planejamento de Rinoplastia no Blender",
@@ -43,10 +43,10 @@ def RhinGeraModeloFotoDef(self, context):
         if platform.system() == "Windows":
             OpenMVGPath = 'C:/OrtogOnBlender/openMVGWin/software/SfM/SfM_SequentialPipeline.py'
             OpenMVSPath = 'C:/OrtogOnBlender/openMVSWin/OpenMVSrhin.bat'
-            
+
         if platform.system() == "Darwin":
-            OpenMVGPath = '/OrtogOnBlender/openMVGMACelcap/SfM_SequentialPipeline.py'
-            OpenMVSPath = '/OrtogOnBlender/openMVSMACelcap/openMVSarcadaMAC.sh' 
+            OpenMVGPath = homeall + '/OrtogOnBlender/openMVGMAC/SfM_SequentialPipeline.py'
+            OpenMVSPath = homeall + '/OrtogOnBlender/openMVSMAC/OpenMVSrhinMAC.sh'
 
         shutil.rmtree(tmpdir + '/OpenMVG', ignore_errors=True)
         shutil.rmtree(tmpdir + '/MVS', ignore_errors=True)
@@ -77,17 +77,33 @@ def RhinGeraModeloFotoDef(self, context):
         bpy.context.object.active_material.diffuse_intensity = 0.6
         bpy.context.object.active_material.specular_intensity = 0.3
         bpy.context.object.active_material.specular_color = (0.233015, 0.233015, 0.233015)
-        #    bpy.ops.object.modifier_add(type='SMOOTH')
-        #    bpy.context.object.modifiers["Smooth"].factor = 2
-        #    bpy.context.object.modifiers["Smooth"].iterations = 3
-        #    bpy.ops.object.convert(target='MESH')
+
+        bpy.ops.object.modifier_add(type='SMOOTH')
+        bpy.context.object.modifiers["Smooth"].factor = 2
+        bpy.context.object.modifiers["Smooth"].iterations = 3
+        bpy.ops.object.convert(target='MESH')
+
         bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN')
         bpy.ops.view3d.view_all(center=False)
         bpy.ops.file.pack_all()
-        
-        bpy.ops.object.modifier_add(type='SMOOTH')
-        bpy.context.object.modifiers["Smooth"].factor = 2
-        bpy.context.object.modifiers["Smooth"].iterations = 4
+
+        # Displacement
+
+        context = bpy.context
+        obj = context.active_object
+
+        heightTex = bpy.data.textures.new('Texture name', type='IMAGE')
+        heightTex.image = bpy.data.images['scene_dense_mesh_texture2_material_0_map_Kd.jpg']
+        dispMod = obj.modifiers.new("Displace", type='DISPLACE')
+        dispMod.texture = heightTex
+        bpy.context.object.modifiers["Displace"].texture_coords = 'UV'
+        bpy.context.object.modifiers["Displace"].strength = 0.035
+        bpy.context.object.modifiers["Displace"].mid_level = 0.5
+
+        bpy.ops.object.shade_smooth()
+
+
+    #       bpy.ops.object.convert(target='MESH')
 
     except RuntimeError:
         bpy.context.window_manager.popup_menu(ERROruntimeFotosDef, title="Atenção!", icon='INFO')
@@ -110,27 +126,13 @@ def RhinImportaMedNarizDef(self, context):
     
     dirScript = bpy.utils.user_resource('SCRIPTS')
 
-    
+    blendfile = dirScript+"addons/RhinOnBlender-master/objetos.blend"
+    section   = "\\Group\\"
+    object    = "MedidasNariz"
 
-    if platform.system() == "Linux" or platform.system() == "Darwin":
-    
-        blendfile = dirScript+"addons/RhinOnBlender-master/objetos.blend"
-        section   = "\\Group\\"
-        object    = "MedidasNariz"
-
-        filepath  = blendfile + section + object
-        directory = blendfile + section
-        filename  = object
-        
-    
-    if platform.system() == "Windows":
-        dirScript = 'C:/OrtogOnBlender/Blender/2.78/scripts/'
-        section   = "\\Group\\"
-        object    = "MedidasNariz"      
-
-        filepath  = blendfile + section + object
-        directory = blendfile + section
-        filename  = object
+    filepath  = blendfile + section + object
+    directory = blendfile + section
+    filename  = object
 
     bpy.ops.wm.append(
         filepath=filepath, 
