@@ -480,248 +480,6 @@ class RhinDistanciaObjetos(bpy.types.Operator):
         return {'FINISHED'}
 
 
-# ZOOM
-class RhinZoomCena(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Zoom Cena"
-    bl_idname = "rhin_zoom_cena"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
-
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-
-
-        row = layout.row()
-        row.operator("view3d.viewnumpad", text="Frente").type='FRONT'
-        row.operator("view3d.viewnumpad", text="Atrás").type='BACK'
-        
-        row = layout.row()
-        row.operator("view3d.viewnumpad", text="Direita").type='RIGHT'
-        row.operator("view3d.viewnumpad", text="Esquerda").type='LEFT'
-        
-        row = layout.row()
-        row.operator("view3d.viewnumpad", text="Cima").type='TOP'
-        row.operator("view3d.viewnumpad", text="Baixo").type='BOTTOM'
-        
-        row = layout.row()
-        row.operator("opr.pan_down_view1", text="Pan", icon="TRIA_UP")
-        row.operator("opr.pan_up_view1", text="Pan", icon="TRIA_DOWN")
-        row.operator("opr.pan_right_view1", text="Pan", icon="TRIA_LEFT")
-        row.operator("opr.pan_left_view1", text="Pan", icon="TRIA_RIGHT")
-
-        row = layout.row()
-        row.operator("opr.orbit_down_view1", text="Orb", icon="FILE_PARENT")
-        row.operator("opr.orbit_up_view1", text="Orb", icon="FILE_REFRESH")
-        row.operator("opr.orbit_right_view1", text="Orb", icon="LOOP_BACK")
-        row.operator("opr.orbit_left_view1", text="Orb", icon="LOOP_FORWARDS")
-
-        
-        row = layout.row()
-        row.operator("view3d.view_persportho", text="Persp/Orto")
-        row.operator("view3d.view_all", text="Centraliza Zoom", icon="VIEWZOOM").center=False    
-
-# FOTOGRAMETRIA
-
-class RhinCriaFotogrametria(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Cria Fotogrametria"
-    bl_idname = "rhin_cria_fotogrametria"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
-
-
-    def draw(self, context):
-        layout = self.layout
-        scn = context.scene
-        obj = context.object 
-        
-        col = layout.column(align=True)
-        col.prop(scn.my_tool, "path", text="")
- 
-        row = layout.row()
-        row.operator("object.rhin_gera_modelo_foto", text="Iniciar Fotogrametria", icon="IMAGE_DATA")
-
-        row = layout.row()
-        row.operator("object.gera_modelo_foto_smvs", text="SMVS+Meshlab", icon="IMAGE_DATA")
-
-# IMPORTA FOTOGRAMETRIA
-
-class RhinImportaFotogrametria(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Importar Fotogrametria"
-    bl_idname = "rhin_importa_fotogrametria"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
-
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-
-
-        row = layout.row()
-        row.operator("import_scene.obj", text="Importa OBJ", icon="MOD_MASK")
-
-class RhinAlinhaFaces(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Alinha Faces"
-    bl_idname = "rhin_alinha_faces"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
-
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-
-
-        layout.operator("object.alinha_rosto", text="1 - Alinha com a Camera", icon="MANIPUL")
-        col = self.layout.column(align = True)
-        col.prop(context.scene, "medida_real")  
-        layout.operator("object.alinha_rosto2", text="2 - Alinha e Redimensiona", icon="LAMP_POINT")
-
-        layout.operator("object.rotaciona_z", text="Flip Z", icon="FORCE_MAGNETIC")
-
-
-# ESTUDA FACE
-
-class RhinEstudaFaces(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Estuda Faces"
-    bl_idname = "rhin_estuda_faces"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
-
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-
-        row = layout.row()
-        linha=row.operator("mesh.add_linhabase", text="Linha Central Ver", icon="PAUSE")
-        linha.location=(0,-200,0)
-
-        row = layout.row()
-        linha=row.operator("mesh.add_linhabase", text="Linha Central Hor", icon="ZOOMOUT")
-        linha.location=(0,-200,0)
-        linha.rotation=(0,1.5708,0)
-        
-        row = layout.row()
-        linha=row.operator("mesh.add_linhabase", text="Linha Lateral Hor", icon="ZOOMOUT")
-        linha.location=(200,30,0)
-        linha.rotation=(1.5708,0,0)
-        
-        row = layout.row()
-        row.operator("view3d.snap_cursor_to_selected", text="Pivô para Seleção", icon="RESTRICT_SELECT_OFF")
-        
-        row = layout.row()
-        row.operator("object.pivo_cursor", text="Pivô no Cursor", icon="CURSOR")
-
-
-#        row = layout.row()
-#        row.operator("object.align_picked_points", text="Alinha por Pontos", icon="PARTICLE_TIP")
-
-        row = layout.row()        
-        row.label(text="Gabarito:")
-
-
-        row = layout.row()
-        linha=row.operator("object.rhin_importa_med_nariz", text="Importar Medidas Nariz", icon="FULLSCREEN_ENTER")
-        
-        row = layout.row()
-        row.operator("object.distancia_objetos", text="Atualiza Fator/Ãngulo", icon="STICKY_UVS_DISABLE")        
-
-        row = layout.row()        
-        row.label(text="Ferramentas de Medidas:")
-        
-
-        row = layout.row()
-        row.operator("measureit.runopenglbutton", text="Ver/Ocultar Medidas", icon="ARROW_LEFTRIGHT")
-
-
-        row = layout.row()
-        row.operator("measureit.addsegmentbutton", text="Fazer Medida", icon="CURVE_NCURVE")
-
-        row = layout.row()
-        row.operator("measureit.addanglebutton", text="Medir Ângulo", icon="EDITMODE_VEC_DEHLT")
-        
-        row = layout.row()
-        row.operator("view3d.ruler", text="Medida/Ângulo Rápido", icon="IPO_LINEAR")
-        
-
-
-# SEPARAR FACE
-   
-class RhinSeparaFace(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Separar Face"
-    bl_idname = "rhin_separa_face"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
-
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-
-        row = layout.row()
-        circle=row.operator("mesh.primitive_circle_add", text="Círculo de Corte", icon="MESH_CIRCLE")
-        circle.radius=200
-        circle.vertices=100
-        circle.location=(135,-185,0)
-        circle.rotation=(0,1.5708,0)
-        
-        row = layout.row()
-        knife=row.operator("object.corta_face", text="Cortar!", icon="META_PLANE")
-        
-        row = layout.row()
-        circle=row.operator("object.rosto_cria_copia", text="Copia Face", icon="NODETREE")
-        
-        
-        
-# ESCULPIR
-      
-class RhinEscultura(bpy.types.Panel):
-    """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Escultura"
-    bl_idname = "rhin_escultura"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Rhin"
-
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-
-
-        row = layout.row()
-        row.operator("object.mode_set", text="Modo Objeto", icon="OBJECT_DATA").mode = 'OBJECT'
-        
-        row = layout.row()
-        row.operator("sculpt.sculptmode_toggle", text="Modo Escultura", icon="SCULPTMODE_HLT")
-        
-        row = layout.row()
-        row.operator("object.escultura_grab", text="Agarra", icon="BRUSH_GRAB")
- 
-        row = layout.row()
-        row.operator("paint.brush_select", text="Empurra", icon="BRUSH_NUDGE").sculpt_tool='NUDGE'
-        
-        row = layout.row()
-        row.operator("paint.brush_select", text="Desenha", icon="BRUSH_SCULPT_DRAW").sculpt_tool='DRAW'
-        
-        row = layout.row()
-        row.operator("paint.brush_select", text="Alisa", icon="BRUSH_SMOOTH").sculpt_tool='SMOOTH'
-
 # SECÇÃO PRÉ E PÓS
 
 def RhinPlanoSeccaoDef(self, context):
@@ -803,11 +561,256 @@ class RhinPlanoSeccao(bpy.types.Operator):
         RhinPlanoSeccaoDef(self, context)
         return {'FINISHED'}
 
+# DESENHA GUIA GREASE
+
+# CORTA DESENHO
+
+def RhinGuiaExtDef(self, context):
+
+    bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "constraint_axis":(False, False, False), "constraint_orientation":'GLOBAL', "mirror":False, "proportional":'DISABLED', "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False})
+
+    bpy.ops.object.material_slot_remove()
+
+
+    bpy.ops.gpencil.convert(type='POLY')
+    bpy.ops.gpencil.layer_remove()
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.knife_project()
+    bpy.ops.mesh.select_mode(type="FACE")
+    bpy.ops.mesh.select_all(action='INVERT')
+    bpy.ops.mesh.delete(type='FACE')
+    bpy.ops.object.editmode_toggle()
+    
+    bpy.ops.object.modifier_add(type='SOLIDIFY')
+    bpy.context.object.modifiers["Solidify"].thickness = -4
+    
+    activeObject = bpy.context.active_object #Set active object to variable
+    mat = bpy.data.materials.new(name="MaterialRamoDir") #set new material to variable
+    activeObject.data.materials.append(mat) #add the material to the object
+    bpy.context.object.active_material.diffuse_color = (0.5, 0.5, 0.0) #change color
+    
+
+#    context = bpy.context
+#    obj = context.active_object
+
+    bpy.ops.object.modifier_add(type='REMESH') 
+    bpy.context.object.modifiers["Remesh"].mode = 'SMOOTH'
+    bpy.context.object.modifiers["Remesh"].octree_depth = 8
+
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+
+
+
+
+    bpy.ops.object.select_all(action='DESELECT')
+    a = bpy.data.objects['GP_Layer']
+    a.select = True
+    bpy.context.scene.objects.active = a
+    bpy.ops.object.delete(use_global=False)
+
+
+class RhinGuiaExt(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.rhin_extrusa_linha"
+    bl_label = "Desenha Corte"
+    
+    def execute(self, context):
+        RhinGuiaExtDef(self, context)
+        return {'FINISHED'}
+
+
+# FOTOGRAMETRIA
+
+class RhinCriaFotogrametria(bpy.types.Panel):
+    """Planejamento de cirurgia ortognática no Blender"""
+    bl_label = "Photogrammetry"
+    bl_idname = "rhin_cria_fotogrametria"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = "Rhin"
+
+
+    def draw(self, context):
+        layout = self.layout
+        scn = context.scene
+        obj = context.object 
+        
+        col = layout.column(align=True)
+        col.prop(scn.my_tool, "path", text="")
+ 
+        row = layout.row()
+        row.operator("object.rhin_gera_modelo_foto", text="Start Photogrammetry!", icon="IMAGE_DATA")
+
+        row = layout.row()
+        row.operator("object.gera_modelo_foto_smvs", text="SMVS+Meshlab", icon="IMAGE_DATA")
+
+        row = layout.row()        
+        row.label(text="External Software:")
+
+        row = layout.row()
+        row.operator("import_scene.obj", text="Importa OBJ", icon="MOD_MASK")
+
+
+class RhinAlinhaFaces(bpy.types.Panel):
+    """Planejamento de cirurgia ortognática no Blender"""
+    bl_label = "Face Alignment"
+    bl_idname = "rhin_alinha_faces"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = "Rhin"
+
+    def draw(self, context):
+        layout = self.layout
+
+        obj = context.object
+
+
+        layout.operator("object.alinha_rosto", text="1 - Align with the Camera", icon="MANIPUL")
+        col = self.layout.column(align = True)
+        col.prop(context.scene, "medida_real")  
+        layout.operator("object.alinha_rosto2", text="2 - Align and Resize", icon="LAMP_POINT")
+
+        layout.operator("object.rotaciona_z", text="Flip Z", icon="FORCE_MAGNETIC")
+
+
+# ESTUDA FACE
+
+class RhinEstudaFaces(bpy.types.Panel):
+    """Planejamento de cirurgia ortognática no Blender"""
+    bl_label = "Face Study"
+    bl_idname = "rhin_estuda_faces"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = "Rhin"
+
+    def draw(self, context):
+        layout = self.layout
+
+        obj = context.object
+
+        row = layout.row()
+        linha=row.operator("mesh.add_linhabase", text="Vertical Central Line", icon="PAUSE")
+        linha.location=(0,-200,0)
+
+        row = layout.row()
+        linha=row.operator("mesh.add_linhabase", text="Horizontal Central Line", icon="ZOOMOUT")
+        linha.location=(0,-200,0)
+        linha.rotation=(0,1.5708,0)
+        
+        row = layout.row()
+        linha=row.operator("mesh.add_linhabase", text="Horizontal Lateral Line", icon="ZOOMOUT")
+        linha.location=(200,30,0)
+        linha.rotation=(1.5708,0,0)
+        
+        row = layout.row()
+        row.operator("view3d.snap_cursor_to_selected", text="Pivot to Selection", icon="RESTRICT_SELECT_OFF")
+        
+        row = layout.row()
+        row.operator("object.pivo_cursor", text="Pivot on Cursor", icon="CURSOR")
+
+
+#        row = layout.row()
+#        row.operator("object.align_picked_points", text="Alinha por Pontos", icon="PARTICLE_TIP")
+
+        row = layout.row()        
+        row.label(text="Template:")
+
+
+        row = layout.row()
+        linha=row.operator("object.rhin_importa_med_nariz", text="Import Nose Measures", icon="FULLSCREEN_ENTER")
+        
+        row = layout.row()
+        row.operator("object.distancia_objetos", text="Update Factor/Angle", icon="STICKY_UVS_DISABLE")        
+
+        row = layout.row()        
+        row.label(text="Measure Tools:")
+        
+
+        row = layout.row()
+        row.operator("measureit.runopenglbutton", text="Show/Hide Measures", icon="ARROW_LEFTRIGHT")
+
+
+        row = layout.row()
+        row.operator("measureit.addsegmentbutton", text="Make Measurement", icon="CURVE_NCURVE")
+
+        row = layout.row()
+        row.operator("measureit.addanglebutton", text="Make Angle Measure", icon="EDITMODE_VEC_DEHLT")
+        
+        row = layout.row()
+        row.operator("view3d.ruler", text="Measure/Angle Ruler", icon="IPO_LINEAR")
+        
+
+
+# SEPARAR FACE
+   
+class RhinSeparaFace(bpy.types.Panel):
+    """Planejamento de cirurgia ortognática no Blender"""
+    bl_label = "Split Face"
+    bl_idname = "rhin_separa_face"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = "Rhin"
+
+    def draw(self, context):
+        layout = self.layout
+
+        obj = context.object
+
+        row = layout.row()
+        circle=row.operator("mesh.primitive_circle_add", text="Cut Circle", icon="MESH_CIRCLE")
+        circle.radius=200
+        circle.vertices=100
+        circle.location=(135,-185,0)
+        circle.rotation=(0,1.5708,0)
+        
+        row = layout.row()
+        knife=row.operator("object.corta_face", text="Cut!", icon="META_PLANE")
+        
+        row = layout.row()
+        circle=row.operator("object.rosto_cria_copia", text="Face Copy", icon="NODETREE")
+        
+        
+        
+# ESCULPIR
+      
+class RhinEscultura(bpy.types.Panel):
+    """Planejamento de cirurgia ortognática no Blender"""
+    bl_label = "Esculpting"
+    bl_idname = "rhin_escultura"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = "Rhin"
+
+    def draw(self, context):
+        layout = self.layout
+
+        obj = context.object
+
+
+        row = layout.row()
+        row.operator("object.mode_set", text="Object Mode", icon="OBJECT_DATA").mode = 'OBJECT'
+        
+        row = layout.row()
+        row.operator("sculpt.sculptmode_toggle", text="Sculpt Mode", icon="SCULPTMODE_HLT")
+        
+        row = layout.row()
+        row.operator("object.escultura_grab", text="Grab", icon="BRUSH_GRAB")
+ 
+        row = layout.row()
+        row.operator("paint.brush_select", text="Nudge", icon="BRUSH_NUDGE").sculpt_tool='NUDGE'
+        
+        row = layout.row()
+        row.operator("paint.brush_select", text="Draw", icon="BRUSH_SCULPT_DRAW").sculpt_tool='DRAW'
+        
+        row = layout.row()
+        row.operator("paint.brush_select", text="Smooth", icon="BRUSH_SMOOTH").sculpt_tool='SMOOTH'
+
+
 # PRE E PÓS
 
 class RhinPrePos(bpy.types.Panel):
     """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Pré e Pós"
+    bl_label = "Pre- and Post-Operative"
     bl_idname = "rhin_pre_pos"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -819,40 +822,40 @@ class RhinPrePos(bpy.types.Panel):
         obj = context.object
 
         row = layout.row()        
-        row.label(text="Pré x Pós Digital:")
+        row.label(text="Digital Pre vs Post:")
 
         row = layout.row()
 
 
         row = layout.row()
-        row.operator("object.mostra_oculta_face", text="Mostra/Oculta Face", icon="MOD_MASK")
+        row.operator("object.mostra_oculta_face", text="Show/Hide Face", icon="MOD_MASK")
 
         row = layout.row()
-        row.operator("render.render_pre_pos", text="Imagem Pré e Pós", icon="META_ELLIPSOID")
+        row.operator("render.render_pre_pos", text="Image Pre vs Post", icon="META_ELLIPSOID")
 
         row = layout.row()
-        circle=row.operator("mesh.rhin_plano_seccao", text="Plano de Secção", icon="MESH_PLANE")
+        circle=row.operator("mesh.rhin_plano_seccao", text="Section Plane", icon="MESH_PLANE")
 
         row = layout.row()
-        row.operator("object.rhin_plano_seccao", text=" Cria Linhas Pré e Pós", icon="PARTICLE_PATH")
+        row.operator("object.rhin_plano_seccao", text=" Make Pre and Post Lines", icon="PARTICLE_PATH")
 
         row = layout.row()
-        row.operator("view3d.clip_border", text="Cria Filete", icon="UV_FACESEL")
+        row.operator("view3d.clip_border", text="Clipping Border", icon="UV_FACESEL")
         
         row = layout.row()        
-        row.label(text="Pós Digital x Pós Real:")
+        row.label(text="Actual Pre vs Post:")
         
         row = layout.row()
-        row.operator("object.align_picked_points", text="Alinha por Pontos", icon="PARTICLE_TIP")
+        row.operator("object.align_picked_points", text="Align by Points", icon="PARTICLE_TIP")
 
         row = layout.row()
-        row.operator("object.align_icp", text="Alinha por ICP", icon="PARTICLE_PATH")        
+        row.operator("object.align_icp", text="Align by ICP", icon="PARTICLE_PATH")        
 
 # DESENHA GUIA
    
 class RhinDesenhaGuia(bpy.types.Panel):
     """Planejamento de cirurgia ortognática no Blender"""
-    bl_label = "Desenha Guia"
+    bl_label = "Make Sirurgical Guide"
     bl_idname = "rhin_desenha_guia"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -864,13 +867,26 @@ class RhinDesenhaGuia(bpy.types.Panel):
         obj = context.object
 
         row = layout.row()
-        row.operator("cut_mesh.polytrim", text="Desenha Cortes", icon="OUTLINER_DATA_MESH")
+        row.label(text="Draw Guide:")
+
+        row = layout.row()
+        row.operator("gpencil.draw", icon='LINE_DATA', text="Draw Line").mode = 'DRAW_POLY'
+
+        row = layout.row()
+        row.operator("object.rhin_extrusa_linha", icon='MOD_SOLIDIFY', text="Extrude Line")
+
+
+        row = layout.row()
+        row.label(text="Guide with Cut:")
+
+        row = layout.row()
+        row.operator("cut_mesh.polytrim", text="Draw Line Cut", icon="OUTLINER_DATA_MESH")
         
         row = layout.row()
-        circle=row.operator("object.cria_espessura", text="Cria Espessura", icon="MOD_SOLIDIFY")
+        circle=row.operator("object.cria_espessura", text="Create Thickness", icon="MOD_SOLIDIFY")
         
         row = layout.row()
-        row.operator("object.prepara_impressao", text="Prepara Impressão 3D", icon="MOD_REMESH")
+        row.operator("object.prepara_impressao", text="Prepare 3D Printing", icon="MOD_REMESH")
         
  
 
@@ -887,9 +903,8 @@ def register():
     bpy.utils.register_class(RhinRostoCriaCopia)
     bpy.utils.register_class(RhinRenderPrePos)
     bpy.utils.register_class(RhinDistanciaObjetos)
-    bpy.utils.register_class(RhinZoomCena)
+    bpy.utils.register_class(RhinGuiaExt)
     bpy.utils.register_class(RhinCriaFotogrametria)
-    bpy.utils.register_class(RhinImportaFotogrametria)
     bpy.utils.register_class(RhinAlinhaFaces)
     bpy.utils.register_class(RhinSeparaFace)
     bpy.utils.register_class(RhinEstudaFaces)
@@ -912,9 +927,8 @@ def unregister():
     bpy.utils.unregister_class(RhinRostoCriaCopia)
     bpy.utils.unregister_class(RhinRenderPrePos)
     bpy.utils.unregister_class(RhinDistanciaObjetos)
-    bpy.utils.unregister_class(RhinZoomCena)
+    bpy.utils.unregister_class(RhinGuiaExt)
     bpy.utils.unregister_class(RhinCriaFotogrametria)
-    bpy.utils.unregister_class(RhinImportaFotogrametria)
     bpy.utils.unregister_class(RhinAlinhaFaces)
     bpy.utils.unregister_class(RhinSeparaFace)
     bpy.utils.unregister_class(RhinEstudaFaces)
