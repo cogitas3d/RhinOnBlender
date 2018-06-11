@@ -581,9 +581,17 @@ def RhinGuiaExtDef(self, context):
     bpy.ops.mesh.delete(type='FACE')
     bpy.ops.object.editmode_toggle()
     
-    bpy.ops.object.modifier_add(type='SOLIDIFY')
-    bpy.context.object.modifiers["Solidify"].thickness = -4
-    
+#    bpy.ops.object.modifier_add(type='SOLIDIFY')
+#    bpy.context.object.modifiers["Solidify"].thickness = -4
+
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.select_all(action='TOGGLE')
+    bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"mirror":False}, TRANSFORM_OT_translate={"value":(2.98023e-08, 2.23517e-08, 4), "constraint_axis":(False, False, True), "constraint_orientation":'NORMAL', "mirror":False, "proportional":'DISABLED', "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False})
+    bpy.ops.transform.resize(value=(1.07569, 1.07569, 1.07569), constraint_axis=(False, False, True), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+    bpy.ops.object.editmode_toggle()
+
+
+
     activeObject = bpy.context.active_object #Set active object to variable
     mat = bpy.data.materials.new(name="MaterialRamoDir") #set new material to variable
     activeObject.data.materials.append(mat) #add the material to the object
