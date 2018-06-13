@@ -147,6 +147,7 @@ def RhinGeraModeloFotoDef(self, context):
         bpy.ops.object.modifier_add(type='SMOOTH')
         bpy.context.object.modifiers["Smooth"].factor = 2
         bpy.context.object.modifiers["Smooth"].iterations = 3
+        bpy.context.object.modifiers["Smooth"].show_viewport = False
         # bpy.ops.object.convert(target='MESH')
 
         bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN')
@@ -169,8 +170,9 @@ def RhinGeraModeloFotoDef(self, context):
         dispMod = obj.modifiers.new("Displace", type='DISPLACE')
         dispMod.texture = heightTex
         bpy.context.object.modifiers["Displace"].texture_coords = 'UV'
-        bpy.context.object.modifiers["Displace"].strength = 0.035
+        bpy.context.object.modifiers["Displace"].strength = 1.7
         bpy.context.object.modifiers["Displace"].mid_level = 0.5
+        bpy.context.object.modifiers["Displace"].show_viewport = False
 
         #Comprime modificadores
         bpy.context.object.modifiers["Smooth"].show_expanded = False
