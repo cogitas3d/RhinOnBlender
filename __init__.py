@@ -41,7 +41,7 @@ def RhinGeraModeloFotoDef(self, context):
 
     onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
-    FotoTeste = onlyfiles[0]
+    FotoTeste = onlyfiles[1]
 
     with open(mypath + FotoTeste, 'rb') as f_jpg:
         tags = exifread.process_file(f_jpg, details=True)
