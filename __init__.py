@@ -52,7 +52,7 @@ def RhinGeraModeloFotoDef(self, context):
     # TESTA MODELO CAMERA
 
     if platform.system() == "Linux":
-        camDatabase = "/home/cogitas3d/Programs/OrtogOnBlender/openMVG/sensor_width_camera_database.txt"
+        camDatabase = "/home/linux3dcs/Programs/OrtogOnBlender/openMVG/sensor_width_camera_database.txt"
 
     if platform.system() == "Darwin":
         camDatabase = "/OrtogOnBlender/openMVGMACelcap/sensor_width_camera_database.txt"
@@ -96,7 +96,7 @@ def RhinGeraModeloFotoDef(self, context):
             file.writelines(inputCam)  # Escreve o modelo de camera no arquivo
 
 # GERA FOTOGRAMETRIA
-
+'''
     try:
 
         OpenMVGtmpDir = tmpdir + '/OpenMVG'
@@ -186,7 +186,7 @@ def RhinGeraModeloFotoDef(self, context):
 
     except RuntimeError:
         bpy.context.window_manager.popup_menu(ERROruntimeFotosDef, title="Atenção!", icon='INFO')
-
+'''
 
 class RhinGeraModeloFoto(bpy.types.Operator):
     """Tooltip"""
@@ -362,7 +362,7 @@ class RhinRostoCriaCopia(bpy.types.Operator):
         return {'FINISHED'}
 
 # RNDERIZAÇÕES PRÉ E PÓS
-
+'''
 def RhinRenderPrePosDef(self, context):
 
     context = bpy.context
@@ -422,7 +422,7 @@ class RhinRenderPrePos(bpy.types.Operator):
     def execute(self, context):
         RhinRenderPrePosDef(self, context)
         return {'FINISHED'}
-
+'''
 
 # DISTANCIA OBJETOS    
 
@@ -483,7 +483,7 @@ class RhinDistanciaObjetos(bpy.types.Operator):
 
 
 # SECÇÃO PRÉ E PÓS
-
+'''
 def RhinPlanoSeccaoDef(self, context):
     
     context = bpy.context
@@ -562,6 +562,7 @@ class RhinPlanoSeccao(bpy.types.Operator):
     def execute(self, context):
         RhinPlanoSeccaoDef(self, context)
         return {'FINISHED'}
+'''
 
 # DESENHA GUIA GREASE
 
@@ -577,7 +578,7 @@ def RhinGuiaExtDef(self, context):
     bpy.ops.gpencil.convert(type='POLY')
     bpy.ops.gpencil.layer_remove()
     bpy.ops.object.editmode_toggle()
-    bpy.ops.mesh.knife_project()
+    bpy.ops.mesh.knife_project(cut_through=True)
     bpy.ops.mesh.select_mode(type="FACE")
     bpy.ops.mesh.select_all(action='INVERT')
     bpy.ops.mesh.delete(type='FACE')
@@ -645,20 +646,36 @@ class RhinCriaFotogrametria(bpy.types.Panel):
         scn = context.scene
         obj = context.object 
         
+#        col = layout.column(align=True)
+#        col.prop(scn.my_tool, "path", text="")
+
+#        row = layout.row()
+#        row.operator("object.rhin_gera_modelo_foto", text="Start Photogrammetry!", icon="IMAGE_DATA")
+
+#        row = layout.row()
+#        row.operator("object.gera_modelo_foto_smvs", text="SMVS+Meshlab", icon="IMAGE_DATA")
+
+#        row = layout.row()        
+#        row.label(text="External Software:")
+
+#        row = layout.row()
+#        row.operator("import_scene.obj", text="Importa OBJ", icon="MOD_MASK")
+
+        row = layout.row()
+        row.operator("object.abre_tmp", text="Open Temporary Dir?", icon="FILESEL")
+
         col = layout.column(align=True)
         col.prop(scn.my_tool, "path", text="")
- 
+
+        if platform.system() == "Windows":
+            row = layout.row()
+            row.operator("wm.console_toggle", text="Open Terminal?", icon="CONSOLE")
+
         row = layout.row()
-        row.operator("object.rhin_gera_modelo_foto", text="Start Photogrammetry!", icon="IMAGE_DATA")
+        row.operator("object.gera_modelo_foto", text="Start Photogrammetry!", icon="IMAGE_DATA")
 
         row = layout.row()
         row.operator("object.gera_modelo_foto_smvs", text="SMVS+Meshlab", icon="IMAGE_DATA")
-
-        row = layout.row()        
-        row.label(text="External Software:")
-
-        row = layout.row()
-        row.operator("import_scene.obj", text="Importa OBJ", icon="MOD_MASK")
 
 
 class RhinAlinhaFaces(bpy.types.Panel):
@@ -767,11 +784,7 @@ class RhinSeparaFace(bpy.types.Panel):
         obj = context.object
 
         row = layout.row()
-        circle=row.operator("mesh.primitive_circle_add", text="Cut Circle", icon="MESH_CIRCLE")
-        circle.radius=200
-        circle.vertices=100
-        circle.location=(135,-185,0)
-        circle.rotation=(0,1.5708,0)
+        row.operator("object.cria_circulo_corte", text="Cutting circle", icon="MESH_CIRCLE")
         
         row = layout.row()
         knife=row.operator("object.corta_face", text="Cut!", icon="META_PLANE")
@@ -840,14 +853,15 @@ class RhinPrePos(bpy.types.Panel):
         row = layout.row()
         row.operator("object.mostra_oculta_face", text="Show/Hide Face", icon="MOD_MASK")
 
-        row = layout.row()
-        row.operator("render.render_pre_pos", text="Image Pre vs Post", icon="META_ELLIPSOID")
+# IMAGENS PRÉ E PÓS
+#        row = layout.row()
+#        row.operator("render.render_pre_pos", text="Image Pre vs Post", icon="META_ELLIPSOID")
 
-        row = layout.row()
-        circle=row.operator("mesh.rhin_plano_seccao", text="Section Plane", icon="MESH_PLANE")
+#        row = layout.row()
+#        circle=row.operator("mesh.rhin_plano_seccao", text="Section Plane", icon="MESH_PLANE")
 
-        row = layout.row()
-        row.operator("object.rhin_plano_seccao", text=" Make Pre and Post Lines", icon="PARTICLE_PATH")
+#        row = layout.row()
+#        row.operator("object.rhin_plano_seccao", text=" Make Pre and Post Lines", icon="PARTICLE_PATH")
 
         row = layout.row()
         row.operator("view3d.clip_border", text="Clipping Border", icon="UV_FACESEL")
@@ -885,22 +899,6 @@ class RhinDesenhaGuia(bpy.types.Panel):
         row = layout.row()
         row.operator("object.rhin_extrusa_linha", icon='MOD_SOLIDIFY', text="Extrude Line")
 
-
-        row = layout.row()
-        row.label(text="Guide with Cut:")
-
-        row = layout.row()
-        row.operator("cut_mesh.polytrim", text="Draw Line Cut", icon="OUTLINER_DATA_MESH")
-        
-        row = layout.row()
-        circle=row.operator("object.cria_espessura", text="Create Thickness", icon="MOD_SOLIDIFY")
-        
-        row = layout.row()
-        row.operator("object.prepara_impressao", text="Prepare 3D Printing", icon="MOD_REMESH")
-        
- 
-
-
 def register():
     bpy.utils.register_class(RhinGeraModeloFoto)
     bpy.utils.register_class(RhinImportaMedNariz)
@@ -911,16 +909,16 @@ def register():
     bpy.utils.register_class(RhinCriaEspessura)
     bpy.utils.register_class(RhinEsculturaGrab)
     bpy.utils.register_class(RhinRostoCriaCopia)
-    bpy.utils.register_class(RhinRenderPrePos)
+#    bpy.utils.register_class(RhinRenderPrePos)
     bpy.utils.register_class(RhinDistanciaObjetos)
     bpy.utils.register_class(RhinGuiaExt)
-    bpy.utils.register_class(RhinCriaFotogrametria)
+#    bpy.utils.register_class(RhinCriaFotogrametria)
     bpy.utils.register_class(RhinAlinhaFaces)
     bpy.utils.register_class(RhinSeparaFace)
     bpy.utils.register_class(RhinEstudaFaces)
     bpy.utils.register_class(RhinEscultura)
-    bpy.utils.register_class(RhinPlanoSeccao)
-    bpy.utils.register_class(RhinPrePos)
+#    bpy.utils.register_class(RhinPlanoSeccao)
+#    bpy.utils.register_class(RhinPrePos)
     bpy.utils.register_class(RhinDesenhaGuia)
 
     
@@ -935,16 +933,16 @@ def unregister():
     bpy.utils.unregister_class(RhinCriaEspessura)
     bpy.utils.unregister_class(RhinEsculturaGrab)
     bpy.utils.unregister_class(RhinRostoCriaCopia)
-    bpy.utils.unregister_class(RhinRenderPrePos)
+#    bpy.utils.unregister_class(RhinRenderPrePos)
     bpy.utils.unregister_class(RhinDistanciaObjetos)
     bpy.utils.unregister_class(RhinGuiaExt)
-    bpy.utils.unregister_class(RhinCriaFotogrametria)
+#    bpy.utils.unregister_class(RhinCriaFotogrametria)
     bpy.utils.unregister_class(RhinAlinhaFaces)
     bpy.utils.unregister_class(RhinSeparaFace)
     bpy.utils.unregister_class(RhinEstudaFaces)
     bpy.utils.unregister_class(RhinEscultura)
-    bpy.utils.unregister_class(RhinPlanoSeccao)
-    bpy.utils.unregister_class(RhinPrePos)
+#    bpy.utils.unregister_class(RhinPlanoSeccao)
+#    bpy.utils.unregister_class(RhinPrePos)
     bpy.utils.unregister_class(RhinDesenhaGuia)
 
 
