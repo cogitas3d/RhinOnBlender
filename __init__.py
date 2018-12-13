@@ -26,7 +26,63 @@ from os import listdir
 from os.path import isfile, join
 import exifread
 
+# ATUALIACAO DO SCRIPT
 
+def RhinAtualizaScriptDef(self, context):
+
+	if platform.system() == "Windows":
+#		subprocess.call('cd C:\OrtogOnBlender\Blender\2.78\scripts\addons\OrtogOnBlender-master && atualiza_ortog.bat', shell=True)
+
+		arquivo = open('atualiza_rhin.bat', 'w+')
+		arquivo.writelines("""cd C:\OrtogOnBlender\Blender\2.78\scripts\addons && ^
+rd /s /q RhinOnBlender-master && ^
+C:\OrtogOnBlender\Python27\python.exe -c "import urllib; urllib.urlretrieve ('https://github.com/cogitas3d/RhinOnBlender/archive/master.zip', 'master.zip')" && ^
+C:\OrtogOnBlender\7-Zip\7z x  master.zip && ^
+del master.zip""")
+
+		arquivo.close()
+
+		subprocess.call('atualiza_rhin.bat', shell=True)
+
+	if platform.system() == "Linux":
+
+		arquivo = open('Programs/OrtogOnBlender/atualiza_rhin.sh', 'w+')
+		arquivo.writelines("""cd $HOME/Downloads && rm -Rfv RhinOnBlender-master* && \
+if [ -f "master.zip" ]; then echo "tem arquivo" && rm master.zi*; fi && \
+wget https://github.com/cogitas3d/RhinOnBlender/archive/master.zip && \
+rm -Rfv $HOME/.config/blender/2.78/scripts/addons/RhinOnBlender-master/ && \
+unzip master.zip && \
+cp -Rv RhinOnBlender-master $HOME/.config/blender/2.78/scripts/addons/""")
+
+		arquivo.close()
+
+		subprocess.call('chmod +x Programs/OrtogOnBlender/atualiza_rhin.sh && Programs/OrtogOnBlender/atualiza_rhin.sh', shell=True)
+        
+
+	if platform.system() == "Darwin":
+
+		arquivo = open('atualiza_rhin.sh', 'w+')
+		arquivo.writelines("""cd $HOME/Downloads && rm -Rfv RhingOnBlender-master* && \
+if [ -f "master.zip" ]; then echo "tem arquivo" && rm master.zi*; fi && \
+wget https://github.com/cogitas3d/RhinOnBlender/archive/master.zip && \
+rm -Rfv $HOME/Library/Application\ Support/Blender/2.78/scripts/addons/RhinOnBlender-master && \
+unzip master.zip && \
+mv RhinOnBlender-master $HOME/Library/Application\ Support/Blender/2.78/scripts/addons/""")
+
+		arquivo.close()
+
+		subprocess.call('chmod +x atualiza_rhin.sh && ./atualiza_rhin.sh', shell=True)
+
+class RhinAtualizaScript(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.rhin_atualiza_script"
+    bl_label = "Atualiza Script"
+
+    def execute(self, context):
+        RhinAtualizaScriptDef(self, context)
+        return {'FINISHED'}
+
+'''
 def RhinGeraModeloFotoDef(self, context):
 
     scn = context.scene
@@ -96,7 +152,7 @@ def RhinGeraModeloFotoDef(self, context):
             file.writelines(inputCam)  # Escreve o modelo de camera no arquivo
 
 # GERA FOTOGRAMETRIA
-'''
+
     try:
 
         OpenMVGtmpDir = tmpdir + '/OpenMVG'
@@ -186,7 +242,7 @@ def RhinGeraModeloFotoDef(self, context):
 
     except RuntimeError:
         bpy.context.window_manager.popup_menu(ERROruntimeFotosDef, title="Atenção!", icon='INFO')
-'''
+
 
 class RhinGeraModeloFoto(bpy.types.Operator):
     """Tooltip"""
@@ -196,6 +252,7 @@ class RhinGeraModeloFoto(bpy.types.Operator):
     def execute(self, context):
         RhinGeraModeloFotoDef(self, context)
         return {'FINISHED'}
+'''
 
 def RhinImportaMedNarizDef(self, context):
     
@@ -629,6 +686,29 @@ class RhinGuiaExt(bpy.types.Operator):
         RhinGuiaExtDef(self, context)
         return {'FINISHED'}
 
+#ATUALIZA VERSAO
+class RhinPainelAtualiza(bpy.types.Panel):
+    """Planejamento de cirurgia ortognática no Blender"""
+    bl_label = "Upgrade RhinOnBlender"
+    bl_idname = "rhin_atualiza"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = "Rhin"
+
+    def draw(self, context):
+        layout = self.layout
+        scn = context.scene
+        obj = context.object 
+		
+        row = layout.row()
+        row.label(text="VERSION: 20181213")
+
+        row = layout.row()
+        row.operator("object.rhin_atualiza_script", text="UPGRADE RHIN!", icon="RECOVER_LAST")
+		
+        if platform.system() == "Windows":
+            row = layout.row()
+            row.operator("wm.console_toggle", text="Open Terminal?", icon="CONSOLE")
 
 # FOTOGRAMETRIA
 
@@ -900,7 +980,8 @@ class RhinDesenhaGuia(bpy.types.Panel):
         row.operator("object.rhin_extrusa_linha", icon='MOD_SOLIDIFY', text="Extrude Line")
 
 def register():
-    bpy.utils.register_class(RhinGeraModeloFoto)
+    bpy.utils.register_class(RhinAtualizaScript)
+#    bpy.utils.register_class(RhinGeraModeloFoto)
     bpy.utils.register_class(RhinImportaMedNariz)
     bpy.utils.register_class(RhinCriaPlanoSeccao)
     bpy.utils.register_class(RhinMostraOcultaFace)
@@ -912,7 +993,8 @@ def register():
 #    bpy.utils.register_class(RhinRenderPrePos)
     bpy.utils.register_class(RhinDistanciaObjetos)
     bpy.utils.register_class(RhinGuiaExt)
-#    bpy.utils.register_class(RhinCriaFotogrametria)
+    bpy.utils.register_class(RhinPainelAtualiza)
+    bpy.utils.register_class(RhinCriaFotogrametria)
     bpy.utils.register_class(RhinAlinhaFaces)
     bpy.utils.register_class(RhinSeparaFace)
     bpy.utils.register_class(RhinEstudaFaces)
@@ -924,7 +1006,8 @@ def register():
     
 
 def unregister():
-    bpy.utils.unregister_class(RhinGeraModeloFoto)
+    bpy.utils.unregister_class(RhinAtualizaScript)
+#    bpy.utils.unregister_class(RhinGeraModeloFoto)
     bpy.utils.unregister_class(RhinImportaMedNariz)
     bpy.utils.unregister_class(RhinCriaPlanoSeccao)
     bpy.utils.unregister_class(RhinMostraOcultaFace)
@@ -936,7 +1019,8 @@ def unregister():
 #    bpy.utils.unregister_class(RhinRenderPrePos)
     bpy.utils.unregister_class(RhinDistanciaObjetos)
     bpy.utils.unregister_class(RhinGuiaExt)
-#    bpy.utils.unregister_class(RhinCriaFotogrametria)
+    bpy.utils.unregister_class(RhinPainelAtualiza)
+    bpy.utils.unregister_class(RhinCriaFotogrametria)
     bpy.utils.unregister_class(RhinAlinhaFaces)
     bpy.utils.unregister_class(RhinSeparaFace)
     bpy.utils.unregister_class(RhinEstudaFaces)
